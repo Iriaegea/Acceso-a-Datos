@@ -1,4 +1,4 @@
-package PrimerosEjercicios;
+package Boletin1;
 
 import java.io.File;
 import java.io.IOException;

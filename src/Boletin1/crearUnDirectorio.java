@@ -1,7 +1,6 @@
-package PrimerosEjercicios;
+package Boletin1;
 
 import java.io.File;
-import java.io.IOException;
 
 public class crearUnDirectorio {
     static void main() {
