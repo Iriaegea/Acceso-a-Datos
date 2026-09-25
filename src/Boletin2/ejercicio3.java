@@ -1,8 +1,6 @@
 package Boletin2;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 
 public class ejercicio3 {
     static File cosa1 = new File("D:\\iriae\\Documents\\Acceso a Datos\\DirectoriosCreados\\EjerciciosBoletin2\\pares.txt");
@@ -23,11 +21,14 @@ public class ejercicio3 {
             FileWriter escritor2 = new FileWriter("D:\\iriae\\Documents\\Acceso a Datos\\DirectoriosCreados\\EjerciciosBoletin2\\impares.txt");
             for (int i = 1; i <=10 ; i++) {
                 if(i%2 == 0){
-                    escritor1.write(String.valueOf(i));
+                    escritor1.write(String.valueOf(i + "\n"));
                 } else {
-                    escritor2.write(String.valueOf(i));
+                    escritor2.write(String.valueOf(i) + "\n");
                 }
             }
+
+            escritor1.close();
+            escritor2.close();
         } catch(IOException e){
             System.out.println("Error al escribir el archivo");
         }
@@ -39,35 +40,34 @@ public class ejercicio3 {
 
 
 
-    public static String leerPares(){
-        try{
-
-        }catch(){
-
-        }
-    }
-
-
-    public static String leerImpares(){
-
-    }
 
     static void main() {
-        boolean seguir = true;
-        String linea = "hola";
-
         crearFicheros();
+        try{
+            BufferedReader lectorPares = new BufferedReader(new FileReader("D:\\iriae\\Documents\\Acceso a Datos\\DirectoriosCreados\\EjerciciosBoletin2\\pares.txt"));
+            BufferedReader lectorImpares = new BufferedReader(new FileReader("D:\\iriae\\Documents\\Acceso a Datos\\DirectoriosCreados\\EjerciciosBoletin2\\impares.txt"));
+            String liña, liña2;
+            FileWriter escritor = new FileWriter("D:\\iriae\\Documents\\Acceso a Datos\\DirectoriosCreados\\EjerciciosBoletin2\\resultado.txt");
 
 
-        while(seguir){
-        leerPares();
-        linea = leerImpares();
+            while((liña = lectorImpares.readLine()) != null | (liña2 = lectorPares.readLine()) != null){
+                if(liña != null){
+                    escritor.write(liña + "\n");
+                }
+                if(liña2 != null){
+                    escritor.write(liña2 +"\n");
+                }
 
-        if(linea = null){
-            seguir = false;
+            }
+            escritor.close();
+            lectorImpares.close();
+            lectorPares.close();
+
+
+        } catch (IOException e){
+            System.out.println("Error al leer oarchivo");
         }
 
-        }
 
 
 
