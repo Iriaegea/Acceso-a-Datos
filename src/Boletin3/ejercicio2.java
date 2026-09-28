@@ -8,12 +8,16 @@ public class ejercicio2 {
         Scanner sc = new Scanner(System.in);
         int contador= 0, sumaTotal = 0;
         File archivo  =new File("D:\\iriae\\Documents\\Acceso a Datos\\DirectoriosCreados\\EjerciciosBoletin3\\ejercicio2.txt");
-        try(DataOutputStream dos = new DataOutputStream(new FileWriter(archivo))) {
+        try(DataOutputStream dos = new DataOutputStream(new FileOutputStream(archivo))) {
             int numero;
             do {
                 System.out.println("Escribe un número entero (-1 para salir): ");
-                numero = sc.nextInt();
-                escritor.write(String.valueOf(numero));
+                
+                    numero = sc.nextInt();
+                if(numero != -1){
+                    dos.writeInt(numero);
+                }
+                
             } while (numero != -1);
 
 
