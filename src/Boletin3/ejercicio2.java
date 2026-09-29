@@ -38,8 +38,8 @@ public class ejercicio2 {
 
         }catch (EOFException e){
                 System.out.println("error de lectura");
-        } catch( IOException e ){
-            System.out.println("fin del fichero");
+        }catch( IOException e ){
+
         }
 
 
