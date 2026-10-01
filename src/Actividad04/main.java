@@ -1,7 +1,6 @@
 package Actividad04;
 
 import java.io.*;
-import java.sql.SQLOutput;
 import java.util.Scanner;
 
 public class main {
@@ -38,6 +37,7 @@ public class main {
         String titulo, autor, isbn;
         double precio;
         int stock;
+
         System.out.println("Vamos a añadir un libro");
         System.out.println("Titulo: ");
         titulo = sc.nextLine();
@@ -51,15 +51,30 @@ public class main {
         System.out.println("Stock: ");
         stock = sc.nextInt();
         sc.nextLine();
+
         Libro libro = new Libro(titulo, autor, isbn, precio, stock);
-        try (ObjectOutputStream obxecto = new ObjectOutputStream(new FileOutputStream("D:\\iriae\\Documents\\Acceso a Datos\\DirectoriosCreados\\Entrega1\\libros.dat", true))) {
+        File archivo = new File("D:\\iriae\\Documents\\Acceso a Datos\\DirectoriosCreados\\Entrega1\\libros.dat");
+
+        if (!archivo.exists() || archivo.length() == 0){
+         try (ObjectOutputStream obxecto = new ObjectOutputStream(new FileOutputStream(archivo))) {
             obxecto.writeObject(libro);
             return true;
 
         } catch (IOException e) {
-            e.printStackTrace();
+            
             return false;
         }
+
+        } else {
+            try (ObjectOutputStream obxeto = new MiObjectOutputStream(new FileOutputStream(archivo, true))){
+                obxeto.writeObject(libro);
+                return true;
+            }catch (IOException e){
+                return false;
+            }
+
+        }
+       
 
 
     }
