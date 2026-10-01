@@ -56,7 +56,7 @@ public class main {
         File archivo = new File("D:\\iriae\\Documents\\Acceso a Datos\\DirectoriosCreados\\Entrega1\\libros.dat");
 
         if (!archivo.exists() || archivo.length() == 0){
-         try (ObjectOutputStream obxecto = new ObjectOutputStream(new FileOutputStream(archivo))) {
+         try (ObjectOutputStream obxecto = new ObjectOutputStream(new FileOutputStream(archivo, false))) {
             obxecto.writeObject(libro);
             return true;
 
@@ -81,6 +81,7 @@ public class main {
 
 
     public static void listarLibrosGuardados(){
+        System.out.println(new File("D:\\iriae\\Documents\\Acceso a Datos\\DirectoriosCreados\\Entrega1\\libros.dat").getAbsolutePath());
         try (ObjectInputStream objeto = new ObjectInputStream(new FileInputStream("D:\\iriae\\Documents\\Acceso a Datos\\DirectoriosCreados\\Entrega1\\libros.dat"))){
             while(true){
                 Libro libro = (Libro) objeto.readObject();
