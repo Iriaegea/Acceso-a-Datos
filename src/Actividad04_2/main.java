@@ -1,12 +1,17 @@
-package Actividad04;
+package Actividad04_2;
+
+import Actividad04.Libro;
+import Actividad04.MiObjectOutputStream;
 
 import java.io.*;
-import java.sql.SQLOutput;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class main {
     static  String ruta = "DirectoriosCreados\\Entrega1\\libros.dat";
     static Scanner sc = new Scanner(System.in);
+
 
     public static int mostrarMenu(){
         int opcion;
@@ -51,37 +56,66 @@ public class main {
         System.out.println("Stock: ");
         stock = sc.nextInt();
         sc.nextLine();
-        Libro libro = new Libro(titulo, autor, isbn, precio, stock);
+       Libro libro = new Actividad04.Libro(titulo, autor, isbn, precio, stock);
         File archivo = new File(ruta);
-        if(!archivo.exists() || archivo.length() == 0){
+        ArrayList<Libro> arrayLibros;
+
+        if(archivo.length() == 0 || !archivo.exists()){
+            arrayLibros = new ArrayList<>();
+        }else{
+            try(ObjectInputStream lectura = new ObjectInputStream(new FileInputStream(archivo))
+            ){
+
+                arrayLibros = (ArrayList<Libro>) lectura.readObject();
+
+
+            } catch (IOException | ClassNotFoundException  e){
+                System.out.println("Error al listar");
+                e.printStackTrace();
+
+            }
+        }
+
+        /*if(archivo.length() ==0 || !archivo.exists()){
             try (ObjectOutputStream obxecto = new ObjectOutputStream(new FileOutputStream(archivo))) {
-                obxecto.writeObject(libro);
-                return true;
+                arrayLibros = new ArrayList<>();
+                arrayLibros.add(libro);
+                obxecto.writeObject(arrayLibros);
+
 
             } catch (IOException e) {
                 e.printStackTrace();
                 return false;
             }
         }else{
-            try(ObjectOutputStream obxecto = new MiObjectOutputStream(new FileOutputStream(archivo, true ))){
-                obxecto.writeObject((libro));
-                return true;
-            }catch (IOException e){
+            try(ObjectOutputStream obxecto = new ObjectOutputStream(new FileOutputStream(archivo ));
+                ObjectInputStream lectura = new ObjectInputStream(new FileInputStream(archivo))
+            ){
+
+                ArrayList<Libro> arrayViejo = (ArrayList<Libro>) lectura.readObject();
+                arrayViejo.add(libro);
+                obxecto.writeObject((arrayViejo));
+
+            }catch(EOFException e){
+
+            } catch (IOException | ClassNotFoundException  e){
+                System.out.println("Error al listar");
                 e.printStackTrace();
                 return false;
             }
-        }
-
-
-
+        }*/
+        return true;
     }
 
 
     public static void listarLibrosGuardados(){
         try (ObjectInputStream objeto = new ObjectInputStream(new FileInputStream(ruta))){
             while(true){
-                Libro libro = (Libro) objeto.readObject();
-                System.out.println(libro);
+                ArrayList<Libro> arrayViejo = (ArrayList<Libro>) objeto.readObject();
+                for(Libro libro : arrayViejo){
+                    System.out.println(libro);
+                }
+
             }
 
         }catch(EOFException e){
@@ -89,6 +123,7 @@ public class main {
         } catch (IOException | ClassNotFoundException  e){
             System.out.println("Error al listar");
             e.printStackTrace();
+
         }
     }
 
@@ -97,11 +132,15 @@ public class main {
         try (ObjectInputStream objeto = new ObjectInputStream(new FileInputStream(ruta))){
 
         while(true){
-            Libro libro = (Libro) objeto.readObject();
-            if(libro.getIsbn().equalsIgnoreCase(isbn)){
-                System.out.println("Libro encontrado: " + libro);
-                break;
+            ArrayList<Libro> arrayViejo = (ArrayList<Libro>) objeto.readObject();
+
+            for(Libro libro : arrayViejo){
+                if(libro.getIsbn().equalsIgnoreCase(isbn)){
+                    System.out.println("Libro encontrado: " + libro);
+
+                }
             }
+
         }
 
         }catch( EOFException e){
@@ -116,6 +155,7 @@ public class main {
     static void main() {
         int opcion;
         String isbn;
+
 
 
             do{
