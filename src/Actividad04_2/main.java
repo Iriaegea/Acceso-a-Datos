@@ -72,38 +72,24 @@ public class main {
             } catch (IOException | ClassNotFoundException  e){
                 System.out.println("Error al listar");
                 e.printStackTrace();
+                return false;
 
             }
         }
 
-        /*if(archivo.length() ==0 || !archivo.exists()){
-            try (ObjectOutputStream obxecto = new ObjectOutputStream(new FileOutputStream(archivo))) {
-                arrayLibros = new ArrayList<>();
-                arrayLibros.add(libro);
-                obxecto.writeObject(arrayLibros);
+        arrayLibros.add(libro);
 
+        try(ObjectOutputStream obxecto = new ObjectOutputStream(new FileOutputStream(archivo ))){
 
-            } catch (IOException e) {
-                e.printStackTrace();
-                return false;
-            }
-        }else{
-            try(ObjectOutputStream obxecto = new ObjectOutputStream(new FileOutputStream(archivo ));
-                ObjectInputStream lectura = new ObjectInputStream(new FileInputStream(archivo))
-            ){
+            obxecto.writeObject((arrayLibros));
 
-                ArrayList<Libro> arrayViejo = (ArrayList<Libro>) lectura.readObject();
-                arrayViejo.add(libro);
-                obxecto.writeObject((arrayViejo));
+        }catch(EOFException e){
 
-            }catch(EOFException e){
-
-            } catch (IOException | ClassNotFoundException  e){
-                System.out.println("Error al listar");
-                e.printStackTrace();
-                return false;
-            }
-        }*/
+        } catch (IOException e){
+            System.out.println("Error al listar");
+            e.printStackTrace();
+            return false;
+        }
         return true;
     }
 
