@@ -7,11 +7,16 @@ import java.util.Scanner;
 public class ejercicio1 {
    static Scanner sc = new Scanner(System.in);
    static String ruta = "Acceso-a-Datos\\DirectoriosCreados\\Entrega2";
-   static int codigo = 1;
+
 
 
     private static final int TITULO_LONG = 30;
     private static final int AUTOR_LONG = 50;
+
+    static final int TAMAÑO_REGISTRO = Integer.BYTES + TITULO_LONG * Character.BYTES + AUTOR_LONG * Character.BYTES + Double.BYTES + Integer.BYTES;
+
+
+
 
 
     static int mostrarMenu(){
@@ -56,30 +61,36 @@ public class ejercicio1 {
         autor = sc.nextLine();
         System.out.println("Escribe el precio: ");
         precio = sc.nextDouble();
+        sc.nextLine();
         System.out.println("Stock: ");
         stock = sc.nextInt();
+        sc.nextLine();
 
         try(RandomAccessFile raf = new RandomAccessFile(ruta, "rw")){
-            StringBuffer sbTitulo = new StringBuffer(titulo);
-            sbTitulo.setLength(TITULO_LONG);
-            StringBuffer sbAutor = new StringBuffer(autor);
-            sbAutor.setLength(AUTOR_LONG);
-            raf.writeChars(sbTitulo.toString());
-            raf.writeChars(sbAutor.toString());
+            int codigo = (int) (raf.length() / TAMAÑO_REGISTRO) + 1;
+            raf.seek(raf.length());
+
+            StringBuffer tituloFijo = new StringBuffer(titulo);
+            tituloFijo.setLength(TITULO_LONG);
+
+            StringBuffer autorFijo = new StringBuffer(autor);
+            autorFijo.setLength(AUTOR_LONG);
+
+            raf.writeInt(codigo);
+            raf.writeChars(tituloFijo.toString());
+            raf.writeChars(autorFijo.toString());
             raf.writeDouble(precio);
             raf.writeInt(stock);
 
-
-
-
+            System.out.println("Libro añadido con código " + codigo );
 
         } catch (IOException e) {
-            System.out.println("Error al escribir el fichero");
+            System.out.println("Error al guardar el libro");
         }
 
 
 
-        codigo ++;
+
     }
 
 
@@ -103,7 +114,7 @@ public class ejercicio1 {
                 case 4:
                     break;
                 case 5:
-                    break,
+                    break;
                 default:
                     System.out.println("Opción indorrecta");
             }
