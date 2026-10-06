@@ -1,12 +1,13 @@
 package Actividad05;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.sql.SQLOutput;
 import java.util.RandomAccess;
 import java.util.Scanner;
 
 public class ejercicio1 {
    static Scanner sc = new Scanner(System.in);
-   static String ruta = "Acceso-a-Datos\\DirectoriosCreados\\Entrega2";
+   static String ruta = "D:\\iriae\\Documents\\Acceso_a_datos\\Acceso-a-Datos\\DirectoriosCreados\\Entrega2\\libreria.dat";
 
 
 
@@ -31,6 +32,7 @@ public class ejercicio1 {
 
         System.out.println("Slecciona una opción: ");
         opcion = sc.nextInt();
+        sc.nextLine();
 
         return opcion;
     }
@@ -39,12 +41,14 @@ public class ejercicio1 {
         static int mostrarMenu2(){
 
         int  opcion;
-        System.out.println("3.1.  De un registro determinado (por código)\n" +
-                "3.2. ¿Cuántos libros del autor x existen en stock? (Buscar los libros de un autor determinado\n");
+        System.out.println("1.  De un registro determinado (por código)\n" +
+                "2. ¿Cuántos libros del autor x existen en stock? (Buscar los libros de un autor determinado\n");
 
 
         System.out.println("Slecciona una opción: ");
         opcion = sc.nextInt();
+        sc.nextLine();
+        System.out.println();
 
         return opcion;
     }
@@ -86,6 +90,7 @@ public class ejercicio1 {
 
         } catch (IOException e) {
             System.out.println("Error al guardar el libro");
+            e.printStackTrace();
         }
 
 
@@ -93,12 +98,55 @@ public class ejercicio1 {
 
     }
 
+    static void listadoCompletoYValoracion(){
+        int   cantidad = 0;
+        double precio = 0, valorTotal = 0;
+
+
+        try (RandomAccessFile raf = new RandomAccessFile(ruta, "r")){
+            raf.seek(0); // empezar desde el principio pq quiero leerlos todos
+            while (raf.getFilePointer()< raf.length()){ // hay q leerlos en el mismo orden q los escribí
+                System.out.println("Código: " + raf.readInt());
+                char[]  tituloChars = new char[TITULO_LONG];
+                for (int i = 0; i < TITULO_LONG; i++) {
+                    tituloChars[i] = raf.readChar();
+                }
+                System.out.println("Título: " + new String(tituloChars).trim()); // para impirmir bien el array
+                char[] autorChars = new char[AUTOR_LONG];
+                for (int i = 0; i < AUTOR_LONG; i++) {
+                    autorChars[i] = raf.readChar();
+                }
+                System.out.println("Autor " + new String(autorChars).trim());
+
+                precio = raf.readDouble();
+                System.out.println("Precio: " + precio);
+                cantidad = raf.readInt();
+                System.out.println("Cantidad : " + cantidad);
+                System.out.println();
+                valorTotal += precio*cantidad;
+                System.out.println();
+
+            }
+
+            System.out.println("VALOR TOTAL: " + valorTotal);
+        } catch(IOException e){
+            System.out.println("Error de lectura del fcihero");
+        }
+    }
+
+
+    static void buscarCodigo(int codigo){
+       try(RandomAccessFile raf = new RandomAccessFile(ruta, "r") ){
+           raf.seek();
+       }
+    }
+    static void buscarAutor(){
+
+    }
 
 
 
     static void main() {
-
-
 
         int opcion = 0;
         do{
@@ -108,8 +156,18 @@ public class ejercicio1 {
                     altas();
                     break;
                 case 2:
+                    listadoCompletoYValoracion();
+                    switch(opcion){
+                        case 1:
+                            buscarCodigo();
+                            break;
+                        case 2:
+                            buscarAutor();
+                            break;
+                    }
                     break;
-                case 2:
+                case 3:
+                    mostrarMenu2();
                     break;
                 case 4:
                     break;
