@@ -135,13 +135,98 @@ public class ejercicio1 {
     }
 
 
-    static void buscarCodigo(int codigo){
+    static void buscarCodigo(){
+        int codigoBuscar, posicionLibro;
+
+        System.out.println("Escribe el codigo del libro que quiere buscar: ");
+        codigoBuscar = sc.nextInt();
+        sc.nextLine();
+
+        posicionLibro = (codigoBuscar - 1) * TAMAÑO_REGISTRO;  // ASI VOY DIRECTAMETE AL REGISTRO Q ES, NO TENGO Q REORRERLOS TODOS
        try(RandomAccessFile raf = new RandomAccessFile(ruta, "r") ){
-           raf.seek();
+           raf.seek(posicionLibro);
+
+           System.out.println("Código: " + raf.readInt());
+           char[]  tituloChars = new char[TITULO_LONG];
+           for (int i = 0; i < TITULO_LONG; i++) {
+               tituloChars[i] = raf.readChar();
+           }
+
+           System.out.println("Título: " + new String(tituloChars).trim()); // para impirmir bien el array
+           char[] autorChars = new char[AUTOR_LONG];
+           for (int i = 0; i < AUTOR_LONG; i++) {
+               autorChars[i] = raf.readChar();
+           }
+
+
+           System.out.println("Autor " + new String(autorChars).trim());
+           System.out.println("Precio: " +  raf.readDouble());
+           System.out.println("Cantidad : " + raf.readInt());
+           System.out.println();
+
+
+       }catch (IOException e){
+           System.out.println("Error al buscar el libro");
        }
     }
     static void buscarAutor(){
+        String autorBuscado;
 
+        System.out.println("Escribe el nombre del autor del lbro que buscas: ");
+        autorBuscado = sc.nextLine();
+
+
+        try(RandomAccessFile raf = new RandomAccessFile(ruta, "r") ){
+            raf.seek(0);
+            double precio;
+            int cantidad, codigo, aparicionesAutor  =0;
+            String titulo, autor;
+
+
+            while (raf.getFilePointer()< raf.length()){
+
+                codigo = raf.readInt();
+                char[]  tituloChars = new char[TITULO_LONG];
+                for (int i = 0; i < TITULO_LONG; i++) {
+                    tituloChars[i] = raf.readChar();
+                }
+                titulo = new String(tituloChars).trim();
+                char[] autorChars = new char[AUTOR_LONG];
+                for (int i = 0; i < AUTOR_LONG; i++) {
+                    autorChars[i] = raf.readChar();
+                }
+                autor = new String(autorChars).trim();
+
+                precio = raf.readDouble();
+
+                cantidad = raf.readInt();
+
+                System.out.println();
+
+                if ( autor.toLowerCase().contains(autorBuscado)){
+                    System.out.println("Código: " + codigo);
+
+                    System.out.println("Título: " + titulo);
+
+                    System.out.println("Autor " + autor);
+
+                    System.out.println("Precio: " + precio);
+
+                    System.out.println("Cantidad : " + cantidad);
+                    System.out.println();
+
+                    aparicionesAutor ++;
+
+
+                }
+
+                System.out.println("Libros totales del autor " + autor + aparicionesAutor);
+            }
+
+
+        }catch (IOException e){
+            System.out.println("Error al buscar el libro");
+        }
     }
 
 
@@ -157,6 +242,9 @@ public class ejercicio1 {
                     break;
                 case 2:
                     listadoCompletoYValoracion();
+                    break;
+                case 3:
+                    opcion = mostrarMenu2();
                     switch(opcion){
                         case 1:
                             buscarCodigo();
@@ -166,12 +254,11 @@ public class ejercicio1 {
                             break;
                     }
                     break;
-                case 3:
-                    mostrarMenu2();
-                    break;
                 case 4:
+
                     break;
                 case 5:
+                    System.out.println("Has salido de la aplicación");
                     break;
                 default:
                     System.out.println("Opción indorrecta");
