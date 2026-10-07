@@ -7,14 +7,14 @@ import java.util.Scanner;
 
 public class ejercicio1 {
    static Scanner sc = new Scanner(System.in);
-   static String ruta = "D:\\iriae\\Documents\\Acceso_a_datos\\Acceso-a-Datos\\DirectoriosCreados\\Entrega2\\libreria.dat";
+   static String ruta = "libreria.dat";
 
 
 
     private static final int TITULO_LONG = 30;
     private static final int AUTOR_LONG = 50;
 
-    static final int TAMAÑO_REGISTRO = Integer.BYTES + TITULO_LONG * Character.BYTES + AUTOR_LONG * Character.BYTES + Double.BYTES + Integer.BYTES;
+    static final int TAMAÑO_REGISTRO = 4 + (TITULO_LONG * 2) + (AUTOR_LONG * 2) + 8 + 4;
 
 
 
@@ -23,6 +23,7 @@ public class ejercicio1 {
     static int mostrarMenu(){
 
         int  opcion;
+        System.out.println();
         System.out.println("1. Altas\n" +
                 "2. Listado del fichero completo con la valoración total del inventario\n" +
                 "3. Consultas\n" +
@@ -30,7 +31,7 @@ public class ejercicio1 {
                 "5. Salir\n");
 
 
-        System.out.println("Slecciona una opción: ");
+        System.out.println("Selecciona una opción: ");
         opcion = sc.nextInt();
         sc.nextLine();
 
@@ -41,11 +42,12 @@ public class ejercicio1 {
         static int mostrarMenu2(){
 
         int  opcion;
-        System.out.println("1.  De un registro determinado (por código)\n" +
-                "2. ¿Cuántos libros del autor x existen en stock? (Buscar los libros de un autor determinado\n");
+        System.out.println();
+        System.out.println("1. Buscar por código\n" +
+                "2. Buscar por autor\n");
 
 
-        System.out.println("Slecciona una opción: ");
+        System.out.println("Selecciona una opción: ");
         opcion = sc.nextInt();
         sc.nextLine();
         System.out.println();
@@ -116,7 +118,7 @@ public class ejercicio1 {
                 for (int i = 0; i < AUTOR_LONG; i++) {
                     autorChars[i] = raf.readChar();
                 }
-                System.out.println("Autor " + new String(autorChars).trim());
+                System.out.println("Autor: " + new String(autorChars).trim());
 
                 precio = raf.readDouble();
                 System.out.println("Precio: " + precio);
@@ -138,11 +140,11 @@ public class ejercicio1 {
     static void buscarCodigo(){
         int codigoBuscar, posicionLibro;
 
-        System.out.println("Escribe el codigo del libro que quiere buscar: ");
+        System.out.println("Escribe el codigo del libro que quieres buscar: ");
         codigoBuscar = sc.nextInt();
         sc.nextLine();
 
-        posicionLibro = (codigoBuscar - 1) * TAMAÑO_REGISTRO;  // ASI VOY DIRECTAMETE AL REGISTRO Q ES, NO TENGO Q REORRERLOS TODOS
+        posicionLibro = (codigoBuscar - 1) * TAMAÑO_REGISTRO;
        try(RandomAccessFile raf = new RandomAccessFile(ruta, "r") ){
            raf.seek(posicionLibro);
 
@@ -179,7 +181,7 @@ public class ejercicio1 {
         try(RandomAccessFile raf = new RandomAccessFile(ruta, "r") ){
             raf.seek(0);
             double precio;
-            int cantidad, codigo, aparicionesAutor  =0;
+            int cantidad, codigo, totalAutor  =0;
             String titulo, autor;
 
 
@@ -215,17 +217,83 @@ public class ejercicio1 {
                     System.out.println("Cantidad : " + cantidad);
                     System.out.println();
 
-                    aparicionesAutor ++;
+                    totalAutor += cantidad;
 
 
                 }
 
-                System.out.println("Libros totales del autor " + autor + aparicionesAutor);
+
             }
+
+            System.out.println("Libros totales del autor " + autorBuscado + " " + totalAutor);
 
 
         }catch (IOException e){
             System.out.println("Error al buscar el libro");
+        }
+    }
+
+
+    static void modificarLibro(){
+        int codigoBuscar, posicionLibro, codigo;
+
+        System.out.println("Escribe el codigo del libro que quieres modificar: ");
+        codigoBuscar = sc.nextInt();
+        sc.nextLine();
+
+        posicionLibro = (codigoBuscar - 1) * TAMAÑO_REGISTRO;  // ASI VOY DIRECTAMETE AL REGISTRO Q ES, NO TENGO Q REORRERLOS TODOS
+        try(RandomAccessFile raf = new RandomAccessFile(ruta, "rw") ){
+            raf.seek(posicionLibro);
+
+
+            System.out.println("Libro buscado: ");
+
+
+            codigo = raf.readInt();
+            System.out.println("Código: " + codigo);
+
+
+            char[]  tituloChars = new char[TITULO_LONG];
+            for (int i = 0; i < TITULO_LONG; i++) {
+                tituloChars[i] = raf.readChar();
+            }
+            String titulo = new String(tituloChars);
+            System.out.println("Título: " + titulo.trim());
+
+
+            char[] autorChars = new char[AUTOR_LONG];
+            for (int i = 0; i < AUTOR_LONG; i++) {
+                autorChars[i] = raf.readChar();
+            }
+            String autor = new String(autorChars);
+            System.out.println("Autor: " + autor.trim());
+
+
+            double precio = raf.readDouble();
+            System.out.println("Precio: " + precio  );
+
+
+            int stock = raf.readInt();
+            System.out.println("Cantidad : " + stock );
+
+
+            System.out.println();
+
+            System.out.println("Nuevo precio: ");
+            precio = sc.nextDouble();
+            sc.nextLine();
+
+            System.out.println("Nuevo stock: ");
+            stock = sc.nextInt();
+            sc.nextLine();
+
+            raf.seek(raf.getFilePointer() - 4 - 8 );
+            raf.writeDouble(precio);
+            raf.writeInt(stock);
+
+
+        }catch (IOException e){
+            System.out.println("Error al guardar los cambios");
         }
     }
 
@@ -255,7 +323,7 @@ public class ejercicio1 {
                     }
                     break;
                 case 4:
-
+                    modificarLibro();
                     break;
                 case 5:
                     System.out.println("Has salido de la aplicación");
