@@ -3,7 +3,7 @@ package Actividad06;
 import java.util.Scanner;
 
 public class ejercicio {
-    static Scanner sc = new Scanner(System.in);
+    /*static Scanner sc = new Scanner(System.in);
 
     static int mostrarMenu(){
         int opcion;
@@ -54,4 +54,5 @@ public class ejercicio {
 
         }
     }
+    */
 }
